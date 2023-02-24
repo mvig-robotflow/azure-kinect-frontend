@@ -66,7 +66,7 @@ export default {
   name: "Dashboard",
   data: () => ({
     // username: localStorage.getItem("username"),
-    version: "v0.0.3",
+    version: "v0.0.4",
     // healthOK: false,
     // healthTimeout: "-1ms",
     // healthColor: "red"
