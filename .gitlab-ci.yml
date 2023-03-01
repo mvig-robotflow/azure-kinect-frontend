@@ -1,0 +1,45 @@
+stages:
+  - build
+#   - deploy
+
+
+
+build:
+  tags:
+    - docker
+  stage: build
+  image: docker:19-dind
+  services:
+    - name: docker:19-dind
+      command: ["--tls=false"]
+  variables:
+    # DOCKER_HOST: tcp://127.0.0.1:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    # HTTP_PROXY: "socks5://100.99.98.216:7890"
+    # HTTPS_PROXY: "socks5://100.99.98.216:7890"
+    # IMAGE_TAG_SHA: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    # IMAGE_TAG_REF: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    # IMAGE_TAG_LATEST: $CI_REGISTRY_IMAGE:latest
+  before_script:
+    - docker info
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build -t $CI_REGISTRY/$CI_REPO_NAME:latest -f docker/Dockerfile .
+    - docker push $CI_REGISTRY/$CI_REPO_NAME:latest
+
+# deploy:
+#   stage: deploy
+#   when: manual
+#   image:
+#     name: bitnami/kubectl:1.23
+#     entrypoint: ['']
+#   environment:
+#     name: dev
+#   only:
+#     - main
+#   script:
+#     - kubectl version
+#     - kubectl config get-contexts
+#     - kubectl -n dataset rollout restart deployment/dataset-expo-obj
+#     - kubectl -n dataset rollout restart deployment/dataset-expo-urdf
