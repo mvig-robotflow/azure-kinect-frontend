@@ -5,7 +5,7 @@
 
 FROM node:16.18.1 AS builder
 WORKDIR /opt/build
-COPY frontend /opt/build
+COPY . /opt/build
 RUN yarn install && yarn build
 
 FROM nginx:1.23.3
